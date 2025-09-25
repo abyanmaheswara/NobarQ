@@ -1,3 +1,4 @@
+import logo from './logo.png';
 import './App.css';
 import { Navbar, Container, Form, FormControl, Button } from 'react-bootstrap';
 import MovieList from './components/MovieList';
@@ -7,7 +8,14 @@ function App() {
     <div className="App">
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#home">Movie App</Navbar.Brand>
+          <Navbar.Brand href="#home">
+            <img
+              src={logo}
+              height="40" // Anda bisa sesuaikan ukurannya
+              className="d-inline-block align-top"
+              alt="NobarQ Logo"
+            />
+          </Navbar.Brand>
           <Form className="d-flex">
             <FormControl
               type="search"

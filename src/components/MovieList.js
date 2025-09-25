@@ -30,7 +30,7 @@ const MovieList = () => {
     <>
       <Row xs={1} md={2} lg={4} className="g-4">
         {movies.map((movie) => (
-          <Col key={`${movie.id}-${Math.random()}`}>
+          <Col key={`${movie.id}-${Math.random()}`} className="card-animation">
             <Card>
               <Card.Img variant="top" src={`${IMAGE_BASE_URL}${movie.poster_path}`} alt={movie.title} />
               <Card.Body>
