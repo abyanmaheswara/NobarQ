@@ -15,7 +15,7 @@ function App() {
   const [currentView, setCurrentView] = useState('popular'); // 'popular' or 'search'
   const [showModal, setShowModal] = useState(false);
   const [movieDetails, setMovieDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Added to trigger new deployment
 
   useEffect(() => {
     if (currentView === 'popular') {
