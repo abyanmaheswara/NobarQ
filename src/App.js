@@ -73,9 +73,6 @@ function App() {
     setCurrentView('popular');
   };
 
-  const handleLoadMore = () => {
-    setPage(prevPage => prevPage + 1);
-  };
 
   return (
     <div className="App">
@@ -83,7 +80,7 @@ function App() {
         <Container>
           <Navbar.Brand href="#" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
             <img
-              src={logo}
+              src="https://png.pngtree.com/png-clipart/20220124/ourmid/pngtree-movie-logo-png-image_4358125.png"
               height="40"
               className="d-inline-block align-top"
               alt="NobarQ Logo"
