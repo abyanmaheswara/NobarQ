@@ -45,11 +45,17 @@ function App() {
 
   const fetchMovieDetails = async (movieId) => {
     try {
-      const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
-      const data = await response.json();
-      setMovieDetails(data);
+      const movieDetailsResponse = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
+      const movieDetailsData = await movieDetailsResponse.json();
+
+      const movieVideosResponse = await fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`);
+      const movieVideosData = await movieVideosResponse.json();
+
+      const trailer = movieVideosData.results.find(video => video.type === 'Trailer' && video.site === 'YouTube');
+
+      setMovieDetails({ ...movieDetailsData, trailerKey: trailer ? trailer.key : null });
     } catch (error) {
-      console.error('Error fetching movie details:', error);
+      console.error('Error fetching movie details or videos:', error);
     }
   };
 
@@ -144,11 +150,11 @@ function App() {
         </Modal.Header>
         <Modal.Body>
           {movieDetails ? (
-            <div className="d-flex">
+            <div className="d-flex flex-column flex-md-row">
               <img
                 src={movieDetails.poster_path ? `${IMAGE_BASE_URL}${movieDetails.poster_path}` : 'https://placehold.co/500x750?text=No+Image'}
                 alt={movieDetails.title}
-                style={{ width: '200px', marginRight: '20px' }}
+                style={{ width: '200px', marginRight: '20px', flexShrink: 0 }}
               />
               <div>
                 <h5>Overview</h5>
@@ -156,6 +162,23 @@ function App() {
                 <p><strong>Release Date:</strong> {movieDetails.release_date}</p>
                 <p><strong>Rating:</strong> {movieDetails.vote_average} / 10</p>
                 <p><strong>Genres:</strong> {movieDetails.genres.map(genre => genre.name).join(', ')}</p>
+                {movieDetails.trailerKey && (
+                  <div className="mt-3">
+                    <h5>Trailer</h5>
+                    <div className="embed-responsive embed-responsive-16by9">
+                      <iframe
+                        className="embed-responsive-item"
+                        width="100%"
+                        height="315"
+                        src={`https://www.youtube.com/embed/${movieDetails.trailerKey}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="Movie Trailer"
+                      ></iframe>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
