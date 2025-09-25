@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Navbar, Container, Form, FormControl, Button } from 'react-bootstrap';
+import { Navbar, Container, Form, FormControl, Button, Modal } from 'react-bootstrap';
 import MovieList from './components/MovieList';
 
 const API_KEY = 'b16ac56fbf458923dd1146c9ee49976b';
 const BASE_URL = 'https://api.themoviedb.org/3';
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -12,6 +13,9 @@ function App() {
   const [noResults, setNoResults] = useState(false);
   const [page, setPage] = useState(1);
   const [currentView, setCurrentView] = useState('popular'); // 'popular' or 'search'
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
+  const [movieDetails, setMovieDetails] = useState(null);
 
   useEffect(() => {
     if (currentView === 'popular') {
@@ -35,6 +39,28 @@ function App() {
     } catch (error) {
       console.error('Error fetching popular movies:', error);
     }
+  };
+
+  const fetchMovieDetails = async (movieId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=en-US`);
+      const data = await response.json();
+      setMovieDetails(data);
+    } catch (error) {
+      console.error('Error fetching movie details:', error);
+    }
+  };
+
+  const handleMovieClick = (movieId) => {
+    setSelectedMovieId(movieId);
+    fetchMovieDetails(movieId);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setMovieDetails(null);
+    setSelectedMovieId(null);
   };
 
   const handleLoadMore = () => {
@@ -98,7 +124,7 @@ function App() {
         {noResults ? (
           <div className="text-center"><h2>Film tidak ada</h2></div>
         ) : (
-          <MovieList movies={movies} />
+          <MovieList movies={movies} onMovieClick={handleMovieClick} />
         )}
         {currentView === 'popular' && !noResults && movies.length > 0 && (
           <div className="text-center mt-4">
@@ -106,6 +132,37 @@ function App() {
           </div>
         )}
       </Container>
+
+      <Modal show={showModal} onHide={handleCloseModal} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>{movieDetails ? movieDetails.title : ''}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {movieDetails ? (
+            <div className="d-flex">
+              <img
+                src={movieDetails.poster_path ? `${IMAGE_BASE_URL}${movieDetails.poster_path}` : 'https://placehold.co/500x750?text=No+Image'}
+                alt={movieDetails.title}
+                style={{ width: '200px', marginRight: '20px' }}
+              />
+              <div>
+                <h5>Overview</h5>
+                <p>{movieDetails.overview}</p>
+                <p><strong>Release Date:</strong> {movieDetails.release_date}</p>
+                <p><strong>Rating:</strong> {movieDetails.vote_average} / 10</p>
+                <p><strong>Genres:</strong> {movieDetails.genres.map(genre => genre.name).join(', ')}</p>
+              </div>
+            </div>
+          ) : (
+            <p>Loading movie details...</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
