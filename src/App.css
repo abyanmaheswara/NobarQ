@@ -1,18 +1,94 @@
+body {
+  background-color: #1a1a1a;
+  color: #FFD700; /* Gold text for general readability */
+}
+
 .App {
   text-align: center;
 }
 
-.card-animation {
-  animation: fadeIn 0.5s ease-in-out;
+.navbar {
+  background-color: #000000 !important; /* Pure black for navbar */
+}
+
+.navbar-brand,
+.navbar-brand .fas.fa-film {
+  color: #FFD700 !important; /* Gold for brand and icon */
+}
+
+.form-control {
+  background-color: #333333;
+  color: #FFD700;
+  border-color: #FFD700;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 215, 0, 0.7);
+}
+
+.btn-outline-success {
+  color: #FFD700;
+  border-color: #FFD700;
+}
+
+.btn-outline-success:hover {
+  background-color: #FFD700;
+  color: #1a1a1a;
 }
 
 .card {
+  background-color: #333333;
+  color: #FFD700;
+  border-color: #FFD700;
   transition: all 0.2s ease-in-out;
 }
 
 .card:hover {
   transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 15px #FFD700; /* Gold shadow on hover */
+}
+
+.card-img-top {
+  border-bottom: 1px solid #FFD700;
+}
+
+.card-title {
+  color: #FFD700;
+}
+
+.card-text {
+  color: #e0e0e0; /* Slightly lighter for overview text */
+}
+
+.modal-content {
+  background-color: #1a1a1a;
+  color: #FFD700;
+  border-color: #FFD700;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: #FFD700;
+}
+
+.modal-title {
+  color: #FFD700;
+}
+
+.btn-secondary {
+  background-color: #555555;
+  border-color: #555555;
+  color: #FFD700;
+}
+
+.btn-secondary:hover {
+  background-color: #FFD700;
+  border-color: #FFD700;
+  color: #1a1a1a;
+}
+
+.card-animation {
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -24,4 +100,9 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Loading text color */
+.text-center h2 {
+  color: #FFD700;
 }
