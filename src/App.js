@@ -16,15 +16,18 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (currentView === 'popular') {
       setMovies([]);
       const fetchInitialMovies = async () => {
+        setLoading(true);
         for (let i = 1; i <= 3; i++) {
           await getPopularMovies(i);
         }
         setPage(3);
+        setLoading(false);
       };
       fetchInitialMovies();
     }
@@ -76,6 +79,7 @@ function App() {
       handleLogoClick();
       return;
     }
+    setLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
       const data = await response.json();
@@ -88,6 +92,8 @@ function App() {
       }
     } catch (error) {
       console.error('Error searching movies:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,12 +127,14 @@ function App() {
         </Container>
       </Navbar>
       <Container className="mt-4">
-        {noResults ? (
+        {loading ? (
+          <div className="text-center"><h2>Loading...</h2></div>
+        ) : noResults ? (
           <div className="text-center"><h2>Film tidak ada</h2></div>
         ) : (
           <MovieList movies={movies} onMovieClick={handleMovieClick} />
         )}
-        {currentView === 'popular' && !noResults && movies.length > 0 && (
+        {currentView === 'popular' && !noResults && movies.length > 0 && !loading && (
           <div className="text-center mt-4">
             <Button variant="primary" onClick={handleLoadMore}>Load More</Button>
           </div>
