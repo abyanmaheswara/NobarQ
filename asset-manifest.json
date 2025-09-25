@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/NobarQ/static/css/main.0a58ef09.css",
+    "main.js": "/NobarQ/static/js/main.6eb20247.js",
+    "static/js/453.11f63a72.chunk.js": "/NobarQ/static/js/453.11f63a72.chunk.js",
+    "index.html": "/NobarQ/index.html",
+    "main.0a58ef09.css.map": "/NobarQ/static/css/main.0a58ef09.css.map",
+    "main.6eb20247.js.map": "/NobarQ/static/js/main.6eb20247.js.map",
+    "453.11f63a72.chunk.js.map": "/NobarQ/static/js/453.11f63a72.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0a58ef09.css",
+    "static/js/main.6eb20247.js"
+  ]
+}
