@@ -14,7 +14,6 @@ function App() {
   const [page, setPage] = useState(1);
   const [currentView, setCurrentView] = useState('popular'); // 'popular' or 'search'
   const [showModal, setShowModal] = useState(false);
-  const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -55,7 +54,6 @@ function App() {
   };
 
   const handleMovieClick = (movieId) => {
-    setSelectedMovieId(movieId);
     fetchMovieDetails(movieId);
     setShowModal(true);
   };
@@ -63,7 +61,6 @@ function App() {
   const handleCloseModal = () => {
     setShowModal(false);
     setMovieDetails(null);
-    setSelectedMovieId(null);
   };
 
   const handleLoadMore = () => {
