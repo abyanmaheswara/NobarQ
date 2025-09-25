@@ -78,12 +78,7 @@ function App() {
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand href="#" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
-            <img
-              src="https://png.pngtree.com/png-clipart/20220124/ourmid/pngtree-movie-logo-png-image_4358125.png"
-              height="40"
-              className="d-inline-block align-top"
-              alt="NobarQ"
-            />{' '}
+            <i className="fas fa-film" style={{ marginRight: '10px' }}></i>
             NobarQ
           </Navbar.Brand>
           <Form className="d-flex" onSubmit={searchMovies}>
