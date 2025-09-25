@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.png';
 import './App.css';
 import { Navbar, Container, Form, FormControl, Button } from 'react-bootstrap';
 import MovieList from './components/MovieList';
@@ -83,8 +82,9 @@ function App() {
               src="https://png.pngtree.com/png-clipart/20220124/ourmid/pngtree-movie-logo-png-image_4358125.png"
               height="40"
               className="d-inline-block align-top"
-              alt="NobarQ Logo"
-            />
+              alt="NobarQ"
+            />{' '}
+            NobarQ
           </Navbar.Brand>
           <Form className="d-flex" onSubmit={searchMovies}>
             <FormControl
