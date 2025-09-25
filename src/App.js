@@ -11,26 +11,44 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState('');
   const [noResults, setNoResults] = useState(false);
+  const [page, setPage] = useState(1);
+  const [currentView, setCurrentView] = useState('popular'); // 'popular' or 'search'
 
-  const getPopularMovies = async () => {
+  useEffect(() => {
+    if (currentView === 'popular') {
+      setMovies([]);
+      const fetchInitialMovies = async () => {
+        for (let i = 1; i <= 3; i++) {
+          await getPopularMovies(i);
+        }
+        setPage(3);
+      };
+      fetchInitialMovies();
+    }
+  }, [currentView]);
+
+  const getPopularMovies = async (pageNum) => {
     setNoResults(false);
     try {
-      const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=1`);
+      const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US&page=${pageNum}`);
       const data = await response.json();
-      setMovies(data.results);
+      setMovies(prevMovies => [...prevMovies, ...data.results]);
     } catch (error) {
       console.error('Error fetching popular movies:', error);
     }
   };
 
-  useEffect(() => {
-    getPopularMovies();
-  }, []);
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    getPopularMovies(nextPage);
+    setPage(nextPage);
+  };
 
   const searchMovies = async (e) => {
     e.preventDefault();
+    setCurrentView('search');
     if (query.trim() === '') {
-      getPopularMovies();
+      handleLogoClick();
       return;
     }
     try {
@@ -48,11 +66,22 @@ function App() {
     }
   };
 
+  const handleLogoClick = () => {
+    setMovies([]);
+    setQuery('');
+    setPage(1);
+    setCurrentView('popular');
+  };
+
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#" onClick={getPopularMovies} style={{ cursor: 'pointer' }}>
+          <Navbar.Brand href="#" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
             <img
               src={logo}
               height="40"
@@ -78,6 +107,11 @@ function App() {
           <div className="text-center"><h2>Film tidak ada</h2></div>
         ) : (
           <MovieList movies={movies} />
+        )}
+        {currentView === 'popular' && !noResults && movies.length > 0 && (
+          <div className="text-center mt-4">
+            <Button variant="primary" onClick={handleLoadMore}>Load More</Button>
+          </div>
         )}
       </Container>
     </div>
