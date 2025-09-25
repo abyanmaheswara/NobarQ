@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Navbar, Container, Form, FormControl, Button, Modal } from 'react-bootstrap';
+import { Navbar, Container, Form, FormControl, Button, Modal, Dropdown, DropdownButton } from 'react-bootstrap';
 import MovieList from './components/MovieList';
 
 const API_KEY = 'b16ac56fbf458923dd1146c9ee49976b';
@@ -16,21 +16,45 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [movieDetails, setMovieDetails] = useState(null);
   const [loading, setLoading] = useState(false); // Added to trigger new deployment
+  const [genres, setGenres] = useState([]);
+  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [selectedGenreName, setSelectedGenreName] = useState('All Categories');
+
+  // Fetch Genres on component mount
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
+        const data = await response.json();
+        setGenres(data.genres);
+      } catch (error) {
+        console.error('Error fetching genres:', error);
+      }
+    };
+    fetchGenres();
+  }, []);
 
   useEffect(() => {
-    if (currentView === 'popular') {
-      setMovies([]);
-      const fetchInitialMovies = async () => {
-        setLoading(true);
-        for (let i = 1; i <= 3; i++) {
-          await getPopularMovies(i);
+    setMovies([]); // Clear movies when view or genre changes
+    setPage(1);
+    const fetchInitialMovies = async () => {
+      setLoading(true);
+      if (currentView === 'popular') {
+        if (selectedGenre) {
+          await fetchMoviesByGenre(selectedGenre, 1);
+          await fetchMoviesByGenre(selectedGenre, 2);
+          await fetchMoviesByGenre(selectedGenre, 3);
+        } else {
+          for (let i = 1; i <= 3; i++) {
+            await getPopularMovies(i);
+          }
         }
-        setPage(3);
-        setLoading(false);
-      };
-      fetchInitialMovies();
-    }
-  }, [currentView]);
+      }
+      setPage(3);
+      setLoading(false);
+    };
+    fetchInitialMovies();
+  }, [currentView, selectedGenre]);
 
   const getPopularMovies = async (pageNum) => {
     setNoResults(false);
@@ -40,6 +64,17 @@ function App() {
       setMovies(prevMovies => [...prevMovies, ...data.results]);
     } catch (error) {
       console.error('Error fetching popular movies:', error);
+    }
+  };
+
+  const fetchMoviesByGenre = async (genreId, pageNum) => {
+    setNoResults(false);
+    try {
+      const response = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=${pageNum}&with_genres=${genreId}`);
+      const data = await response.json();
+      setMovies(prevMovies => [...prevMovies, ...data.results]);
+    } catch (error) {
+      console.error('Error fetching movies by genre:', error);
     }
   };
 
@@ -71,8 +106,20 @@ function App() {
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
-    getPopularMovies(nextPage);
+    if (selectedGenre) {
+      fetchMoviesByGenre(selectedGenre, nextPage);
+    } else {
+      getPopularMovies(nextPage);
+    }
     setPage(nextPage);
+  };
+
+  const handleGenreChange = (genreId, genreName) => {
+    setSelectedGenre(genreId);
+    setSelectedGenreName(genreName);
+    setCurrentView('popular'); // Always switch to popular view when genre changes
+    setMovies([]); // Clear movies to load new genre movies
+    setPage(1);
   };
 
   const searchMovies = async (e) => {
@@ -105,6 +152,8 @@ function App() {
     setQuery('');
     setPage(1);
     setCurrentView('popular');
+    setSelectedGenre(null);
+    setSelectedGenreName('All Categories');
   };
 
 
@@ -127,6 +176,19 @@ function App() {
             />
             <Button variant="outline-success" type="submit">Search</Button>
           </Form>
+          <DropdownButton
+            id="dropdown-basic-button"
+            title={selectedGenreName}
+            variant="outline-success"
+            className="ms-2"
+          >
+            <Dropdown.Item onClick={() => handleGenreChange(null, 'All Categories')}>All Categories</Dropdown.Item>
+            {genres.map(genre => (
+              <Dropdown.Item key={genre.id} onClick={() => handleGenreChange(genre.id, genre.name)}>
+                {genre.name}
+              </Dropdown.Item>
+            ))}
+          </DropdownButton>
         </Container>
       </Navbar>
       <Container className="mt-4">
